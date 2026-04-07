@@ -64,6 +64,12 @@ fn add_filename(command: &mut Command, file_name: &Option<String>) {
     }
 }
 
+fn set_starting_directory(command: &mut Command, dir: &Option<PathBuf>) {
+    if let Some(dir) = dir.as_ref() {
+        command.current_dir(dir);
+    }
+}
+
 async fn run(mut command: Command) -> ZenityResult<Option<String>> {
     let res = {
         let (tx, rx) = crate::oneshot::channel();
@@ -83,6 +89,7 @@ pub async fn pick_file(dialog: &FileDialog) -> ZenityResult<Option<PathBuf>> {
 
     add_filters(&mut command, &dialog.filters);
     add_filename(&mut command, &dialog.file_name);
+    set_starting_directory(&mut command, &dialog.starting_directory);
 
     run(command).await.map(|res| {
         res.map(|buffer| {
@@ -98,6 +105,7 @@ pub async fn pick_files(dialog: &FileDialog) -> ZenityResult<Vec<PathBuf>> {
 
     add_filters(&mut command, &dialog.filters);
     add_filename(&mut command, &dialog.file_name);
+    set_starting_directory(&mut command, &dialog.starting_directory);
 
     run(command).await.map(|res| {
         res.map(|buffer| {
@@ -114,6 +122,7 @@ pub async fn pick_folder(dialog: &FileDialog) -> ZenityResult<Option<PathBuf>> {
 
     add_filters(&mut command, &dialog.filters);
     add_filename(&mut command, &dialog.file_name);
+    set_starting_directory(&mut command, &dialog.starting_directory);
 
     run(command).await.map(|res| {
         res.map(|buffer| {
@@ -129,6 +138,7 @@ pub async fn pick_folders(dialog: &FileDialog) -> ZenityResult<Vec<PathBuf>> {
 
     add_filters(&mut command, &dialog.filters);
     add_filename(&mut command, &dialog.file_name);
+    set_starting_directory(&mut command, &dialog.starting_directory);
 
     run(command).await.map(|res| {
         res.map(|buffer| {
@@ -145,6 +155,7 @@ pub async fn save_file(dialog: &FileDialog) -> ZenityResult<Option<PathBuf>> {
 
     add_filters(&mut command, &dialog.filters);
     add_filename(&mut command, &dialog.file_name);
+    set_starting_directory(&mut command, &dialog.starting_directory);
 
     run(command).await.map(|res| {
         res.map(|buffer| {
